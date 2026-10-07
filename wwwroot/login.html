@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Sign in · Server Inventory</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/login.js" defer></script>
+</head>
+<body class="login-page">
+  <main class="login-card">
+    <a class="brand" href="/login.html" aria-label="Server Inventory sign in">
+      <span class="brand-mark">SI</span>
+      <span>Server Inventory</span>
+    </a>
+    <p class="eyebrow">SERVER INVENTORY</p>
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in with your administrator account to access the server inventory.</p>
+    <form class="login-form" id="login-form">
+      <label class="form-field">Username
+        <input name="username" autocomplete="username" maxlength="100" required autofocus>
+      </label>
+      <label class="form-field">Password
+        <input name="password" type="password" autocomplete="current-password" maxlength="1024" required>
+      </label>
+      <p class="form-error" id="login-error" role="alert"></p>
+      <button class="button button-primary" id="login-button" type="submit">Sign in</button>
+    </form>
+    <p class="login-note">Your session is protected with a secure, HTTP-only cookie.</p>
+  </main>
+</body>
+</html>

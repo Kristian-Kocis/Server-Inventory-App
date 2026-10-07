@@ -1,0 +1,118 @@
+@Server_Inventory_HostAddress = http://localhost:5275
+@adminUsername = replace-with-configured-username
+@adminPassword = replace-with-configured-password
+@csrfToken = replace-with-request-token
+@accessToken = replace-with-jwt-access-token
+
+### Get a JWT for API clients
+POST {{Server_Inventory_HostAddress}}/api/auth/token
+Content-Type: application/json
+
+{
+  "username": "{{adminUsername}}",
+  "password": "{{adminPassword}}"
+}
+
+### Read inventory summary with a JWT
+GET {{Server_Inventory_HostAddress}}/api/servers/summary
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### List servers with a JWT
+GET {{Server_Inventory_HostAddress}}/api/servers
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Add a server with a JWT (copy accessToken from the token response above)
+POST {{Server_Inventory_HostAddress}}/api/servers
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Web Production 01",
+  "hostname": "web-prod-01.example.net",
+  "ipAddress": "192.0.2.10",
+  "operatingSystem": "Ubuntu 24.04 LTS",
+  "environment": "Production",
+  "status": "Running",
+  "location": "EU-West",
+  "notes": "Primary web node"
+}
+
+### Get an anonymous CSRF token; copy requestToken from the response below
+GET {{Server_Inventory_HostAddress}}/api/auth/csrf
+Accept: application/json
+
+### Sign in; the REST client should retain the Set-Cookie session cookie
+POST {{Server_Inventory_HostAddress}}/api/auth/login
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{
+  "username": "{{adminUsername}}",
+  "password": "{{adminPassword}}"
+}
+
+### Get a fresh authenticated CSRF token and copy requestToken into @csrfToken
+GET {{Server_Inventory_HostAddress}}/api/auth/csrf
+Accept: application/json
+
+### Get the current administrator
+GET {{Server_Inventory_HostAddress}}/api/auth/me
+Accept: application/json
+
+### Dashboard summary (requires sign-in)
+GET {{Server_Inventory_HostAddress}}/api/servers/summary
+Accept: application/json
+
+### List servers (requires sign-in)
+GET {{Server_Inventory_HostAddress}}/api/servers
+Accept: application/json
+
+### Search and filter servers (requires sign-in)
+GET {{Server_Inventory_HostAddress}}/api/servers?search=web&status=Running
+Accept: application/json
+
+### Add a server (requires sign-in and a fresh CSRF token)
+POST {{Server_Inventory_HostAddress}}/api/servers
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{
+  "name": "Web Production 01",
+  "hostname": "web-prod-01.example.net",
+  "ipAddress": "192.0.2.10",
+  "operatingSystem": "Ubuntu 24.04 LTS",
+  "environment": "Production",
+  "status": "Running",
+  "location": "EU-West",
+  "notes": "Primary web node"
+}
+
+### Get a server by ID (requires sign-in)
+GET {{Server_Inventory_HostAddress}}/api/servers/1
+Accept: application/json
+
+### Update a server (requires sign-in and a fresh CSRF token)
+PUT {{Server_Inventory_HostAddress}}/api/servers/1
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{
+  "name": "Web Production 01",
+  "hostname": "web-prod-01.example.net",
+  "ipAddress": "192.0.2.10",
+  "operatingSystem": "Ubuntu 24.04 LTS",
+  "environment": "Production",
+  "status": "Maintenance",
+  "location": "EU-West",
+  "notes": "Scheduled maintenance"
+}
+
+### Delete a server (requires sign-in and a fresh CSRF token)
+DELETE {{Server_Inventory_HostAddress}}/api/servers/1
+X-CSRF-TOKEN: {{csrfToken}}
+
+### Sign out (requires sign-in and a fresh CSRF token)
+POST {{Server_Inventory_HostAddress}}/api/auth/logout
+X-CSRF-TOKEN: {{csrfToken}}
